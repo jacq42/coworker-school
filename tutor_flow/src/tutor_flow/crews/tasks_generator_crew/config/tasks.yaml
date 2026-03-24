@@ -1,0 +1,16 @@
+generate_worksheet_task:
+  description: >
+        1. Identify Input: Analyze the provided subject, grade, and source material. 
+        If a specific lesson is mentioned (e.g., 'Prima Lektion 1'), retrieve the vocabulary 
+        from the internal library.
+        2. Select Exercise Type: Choose between vocabulary tests, translation exercises, 
+        grammar drills, spelling practice, or reading comprehension based on user needs.
+        3. Generate Content: Create 10-15 minutes worth of exercises. Ensure age-appropriate 
+        vocabulary and clear instructions. Include a 'Vocabulary Help' section if external words are used.
+        4. Document Structure: Format the output with a header (Subject, Grade, Date, Name), 
+        numbered tasks, and a solution key on a separate page (shaded in light gray).
+  expected_output: >
+        A structured Markdown or JSON representation of the worksheet containing: 
+        Header details, Task titles, Exercise content, and a Solution Key. 
+        This output will serve as the input for the DOCX generation tool.
+  agent: educational_content_creator
