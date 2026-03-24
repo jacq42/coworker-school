@@ -1,21 +1,20 @@
-from typing import Type
+from pathlib import Path
 
-from pydantic import BaseModel, Field
+from crewai_tools import FileReadTool
 
-from crewai.tools import BaseTool
-
-
-class MyCustomToolInput(BaseModel):
-    """Input schema for MyCustomTool."""
-
-    argument: str = Field(..., description="Description of the argument.")
+VOCABULARY_LIBRARY_ROOT = Path(__file__).resolve().parent.parent / "vocabulary_library"
 
 
-class MyCustomTool(BaseTool):
-    name: str = "Name of my tool"
-    description: str = "Clear description for what this tool is useful for, your agent will need this information to use it."
-    args_schema: Type[BaseModel] = MyCustomToolInput
+def get_vocabulary_file_read_tool() -> FileReadTool:
+    english_file = VOCABULARY_LIBRARY_ROOT / "english" / "english.md"
+    latin_lessons_dir = VOCABULARY_LIBRARY_ROOT / "latin"
 
-    def _run(self, argument: str) -> str:
-        # Implementation goes here
-        return "this is an example of a tool output, ignore it and move along."
+    return FileReadTool(
+        name="Vocabulary library file reader",
+        description=(
+            "Read markdown files from the packaged vocabulary library. "
+            f"Use {english_file} for English. "
+            f"For Latin, choose the lesson-specific markdown file inside {latin_lessons_dir}, "
+            "for example prima_lektion01.md or prima_lektion02.md."
+        ),
+    )

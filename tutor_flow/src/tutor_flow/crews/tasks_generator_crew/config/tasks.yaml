@@ -1,16 +1,32 @@
 generate_worksheet_task:
   description: >
-        1. Identify Input: Analyze the provided subject, grade, and source material. 
-        If a specific lesson is mentioned (e.g., 'Prima Lektion 1'), retrieve the vocabulary 
-        from the internal library.
-        2. Select Exercise Type: Choose between vocabulary tests, translation exercises, 
-        grammar drills, spelling practice, or reading comprehension based on user needs.
-        3. Generate Content: Create 10-15 minutes worth of exercises. Ensure age-appropriate 
-        vocabulary and clear instructions. Include a 'Vocabulary Help' section if external words are used.
-        4. Document Structure: Format the output with a header (Subject, Grade, Date, Name), 
+        1. Analyze the request for subject `{subject}`, lessons `{lessons}`,
+        task type `{type}`, and target vocabulary count `{vocabularies}`.
+        Use the structured vocabulary list from `import_vocabulary_task` when it is available.
+        2. Create a `{type}` that matches the subject and lesson scope.
+        If `{subject}` is Latin or English, align the task closely with the imported vocabulary.
+        3. Generate content for exactly `{vocabularies}` vocabulary items when the request is a vocabulary-focused task.
+        For non-vocabulary tasks, use the number as the maximum number of external vocabulary items.
+        4. Format the output with a header (Subject, Lessons, Type, Date, Name),
         numbered tasks, and a solution key on a separate page (shaded in light gray).
   expected_output: >
-        A structured Markdown or JSON representation of the worksheet containing: 
-        Header details, Task titles, Exercise content, and a Solution Key. 
-        This output will serve as the input for the DOCX generation tool.
+        A structured Markdown or JSON representation of the worksheet containing:
+        subject, lessons, task type, exercise content, and a solution key.
+        The content should reflect the requested vocabulary count.
+  agent: educational_content_creator
+
+import_vocabulary_task:
+  description: >
+        1. Analyze the request for subject `{subject}`, lessons `{lessons}`,
+        task type `{type}`, and target vocabulary count `{vocabularies}`.
+        2. For English, use `src/tutor_flow/vocabulary_library/english/english.md`.
+        For Latin, open the lesson-specific markdown files from `src/tutor_flow/vocabulary_library/latin/`
+        that match `{lessons}`, such as `prima_lektion01.md`, `prima_lektion02.md`, and so on.
+        3. Use the file reading tool to open the matching markdown file or files from the vocabulary library.
+        If the Latin request includes lesson numbers, prefer the corresponding `prima_lektionXX.md` files.
+        4. Extract and organize up to `{vocabularies}` relevant vocabulary words and phrases from the selected files.
+        5. Return the vocabulary in a structured format that the worksheet task can reuse directly.
+  expected_output: >
+        A structured vocabulary list for `{subject}` based on lessons `{lessons}`.
+        Include the selected source files and no more than `{vocabularies}` vocabulary entries unless the request clearly needs fewer.
   agent: educational_content_creator
