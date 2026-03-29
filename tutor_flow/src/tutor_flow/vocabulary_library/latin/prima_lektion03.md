@@ -1,6 +1,9 @@
 # Latein – Lektion 3: Die Pläne der Verbrecher
+
 Lehrwerk: Prima (Cornelsen)
 Klasse: 7
+
+## Vokabeln
 
 | Latein | Hinweis | Deutsch |
 |--------|---------|---------|
@@ -8,7 +11,7 @@ Klasse: 7
 | parāre | parō | (vor)bereiten, vorhaben, erwerben |
 | tū | (betont) | du |
 | sedēre | sedeō | sitzen |
-| scīre | sciō | wissen, kennen |
+| scire | sciō | wissen, kennen |
 | aliter | Adv. | anders, sonst |
 | pārēre | pāreō | gehorchen |
 | rēctē | Adv. | richtig, zu Recht |
@@ -38,3 +41,20 @@ Klasse: 7
 | propter | Präp. m. Akk. | wegen |
 | audācia | audāciam f | die Frechheit, die Kühnheit |
 | laudāre | laudō | loben |
+
+## Sätze
+
+| Latein | Deutsch |
+|--------|---------|
+| Equōs spectāre parō. | Ich habe vor, die Pferde anzuschauen. |
+| Fūrtum parō. | Ich bereite einen Diebstahl vor. |
+| Frūmentum parō. | Ich erwerbe Getreide. |
+| Dāvus apud amicōs est. | Davus ist bei seinen Freunden. |
+| Servus pāret, dominus autem servum monet. | Der Sklave gehorcht, aber der Herr ermahnt den Sklaven. |
+| in tabernam | in den Laden |
+| in senātōrem | gegen den Senator |
+| ad cōnsilium venire | zur Beratung kommen |
+| cōnsilium scire | den Plan (Beschluss) kennen |
+| cōnsilium audire | den Rat hören |
+| Dāvus aedificium intrāre audet. | Davus wagt es (traut sich), das Haus zu betreten. |
+| propter cōnsilium | wegen des Beschlusses |

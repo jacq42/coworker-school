@@ -1,6 +1,9 @@
 # Latein – Lektion 2: Möhren weisen den Weg
+
 Lehrwerk: Prima (Cornelsen)
 Klasse: 7
+
+## Vokabeln
 
 | Latein | Hinweis | Deutsch |
 |--------|---------|---------|
@@ -13,8 +16,8 @@ Klasse: 7
 | amica | amicam f | die Freundin |
 | per | Präp. m. Akk. | durch |
 | via | viam f | der Weg, die Straße |
-| reperīre | reperit | finden, wiederfinden |
-| audīre | audit | hören |
+| reperire | reperit | finden, wiederfinden |
+| audire | audit | hören |
 | itaque | | deshalb |
 | iterum | Adv. | wieder(um), zum zweiten Mal |
 | iam | Adv. | schon, bereits, nun |
@@ -35,3 +38,18 @@ Klasse: 7
 | ante | Präp. m. Akk. | vor |
 | semper | Adv. | immer |
 | bēstia | bēstiam f | das Tier |
+
+## Sätze
+
+| Latein | Deutsch |
+|--------|---------|
+| Dāvus ad dominum venit. | Davus kommt zum Herrn. |
+| Dāvus ad Colossēum stat. | Davus steht beim Kolosseum. |
+| Cūr servus nōn properat? | Warum beeilt sich der Sklave nicht? |
+| Serva ad Colossēum properat. | Die Sklavin eilt zum Kolosseum. |
+| Amici per forum properant. | Die Freunde eilen durch (über) den Marktplatz. |
+| Dāvus ibi diū exspectat. | Davus wartet dort lange. |
+| Dāvus amicōs exspectat. | Davus erwartet die Freunde. |
+| Serva amicam adiuvat. | Die Sklavin hilft der Freundin. |
+| Serva amicam adiuvat. | Die Sklavin unterstützt die Freundin. |
+| ante aedificium | vor dem Haus |

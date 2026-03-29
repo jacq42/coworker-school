@@ -1,6 +1,9 @@
 # Latein – Lektion 1: Sieg im Circus Maximus
+
 Lehrwerk: Prima (Cornelsen)
 Klasse: 7
+
+## Vokabeln
 
 | Latein | Hinweis | Deutsch |
 |--------|---------|---------|
@@ -8,7 +11,7 @@ Klasse: 7
 | ubi? | | wo? |
 | esse | est | sein, sich befinden |
 | nōn | | nicht |
-| venīre | venit | kommen |
+| venire | venit | kommen |
 | dominus | m | der Herr |
 | et | | und, auch |
 | domina | f | die Herrin, die Dame |
@@ -33,7 +36,7 @@ Klasse: 7
 | rogāre | rogat | fragen, bitten (um) |
 | ibi | Adv. | dort |
 | frūmentum | n | das Getreide |
-| rīdēre | ridet | lachen, auslachen |
+| ridēre | ridet | lachen, auslachen |
 | amāre | amat | lieben, gernhaben |
 | quis? | | wer? |
 | hic | Adv. | hier |
@@ -41,3 +44,16 @@ Klasse: 7
 | dēbēre | dēbet | müssen, sollen, schulden |
 | fūrtum | n | der Diebstahl |
 | cūr? | | warum? |
+
+## Sätze
+
+| Latein | Deutsch |
+|--------|---------|
+| Dāvus cōgitat. | Davus denkt nach. |
+| Ubi est Incitātus? | Wo ist Incitatus? Wo befindet sich Incitatus? |
+| Dāvus venire cōgitat. | Davus beabsichtigt zu kommen. |
+| Servi stant et spectant. | Die Sklaven stehen da und schauen zu. |
+| Victor gaudet. | Der Sieger freut sich. |
+| Dominae gaudent et rident. | Die Herrinnen freuen sich und lachen. |
+| Nunc etiam Incitātus adest. | Jetzt ist auch Incitatus da. |
+| Servus venīre dēbet. | Der Sklave muss (soll) kommen. |
