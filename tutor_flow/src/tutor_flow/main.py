@@ -2,78 +2,114 @@
 import json
 import re
 import sys
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, Field
 
 from crewai.flow import Flow, listen, start
 
+from tutor_flow.helpers.input_helpers import (
+    _available_lessons_for_subject,
+    _format_subject_options,
+    _format_task_type_options,
+    _normalize_subject_value,
+    _normalize_task_type_value,
+    _parse_lessons,
+    _parse_vocabulary_count,
+)
 from tutor_flow.crews.tasks_generator_crew.tasks_generator_crew import TasksGeneratorCrew
 
 
 class TaskGeneratorState(BaseModel):
-    subject: str = "English"
+    subject: str = "Englisch"
     lessons: list[int] = Field(default_factory=list)
-    type: str = "worksheet"
+    type: str = "Vokabeltest"
     vocabularies: int = 15
     task: str = ""
 
-
-def _parse_lessons(raw_lessons: Any) -> list[int]:
-    if raw_lessons is None:
-        return []
-
-    if isinstance(raw_lessons, int):
-        return [raw_lessons]
-
-    if isinstance(raw_lessons, str):
-        lesson_numbers = [int(match) for match in re.findall(r"\d+", raw_lessons)]
-        return lesson_numbers
-
-    if isinstance(raw_lessons, (list, tuple, set)):
-        lessons: list[int] = []
-        for lesson in raw_lessons:
-            lessons.extend(_parse_lessons(lesson))
-        return lessons
-
-    raise ValueError(f"Unsupported lessons value: {raw_lessons!r}")
-
-
-def _parse_vocabulary_count(raw_vocabulary_count: Any) -> int:
-    if raw_vocabulary_count in (None, ""):
-        return 15
-
-    if isinstance(raw_vocabulary_count, int):
-        return raw_vocabulary_count
-
-    if isinstance(raw_vocabulary_count, str):
-        match = re.search(r"\d+", raw_vocabulary_count)
-        if match:
-            return int(match.group())
-
-    raise ValueError(f"Unsupported vocabularies value: {raw_vocabulary_count!r}")
 
 
 class TaskGeneratorFlow(Flow[TaskGeneratorState]):
     @staticmethod
     def _normalize_subject(raw_subject: Any) -> str:
-        if raw_subject is None:
-            return "English"
-
-        subject = str(raw_subject).strip()
-        return subject or "English"
+        return _normalize_subject_value(raw_subject)
 
     @staticmethod
     def _normalize_type(raw_type: Any) -> str:
-        if raw_type is None:
-            return "worksheet"
-
-        task_type = str(raw_type).strip()
-        return task_type or "worksheet"
+        return _normalize_task_type_value(raw_type)
 
     @staticmethod
     def _format_lessons(lessons: list[int]) -> str:
         return ", ".join(str(lesson) for lesson in lessons) if lessons else "none"
+
+    def _prompt_lessons_for_subject(self, subject: str) -> str:
+        available_lessons = _available_lessons_for_subject(subject)
+        if available_lessons:
+            print(
+                "Verfügbare Lektionen "
+                f"für {subject}: {self._format_lessons(available_lessons)}"
+            )
+
+            while True:
+                selected_lessons_raw = input(
+                    "Welche Lektionen sollen verwendet werden? "
+                    "(z. B. 1 oder 1,2,3 oder 1-4) "
+                )
+                try:
+                    selected_lessons = _parse_lessons(selected_lessons_raw)
+                except ValueError:
+                    print("Ungueltiges Format. Bitte nutze z. B. 1, 1,2,3 oder 1-4.")
+                    continue
+                invalid_lessons = [
+                    lesson for lesson in selected_lessons if lesson not in available_lessons
+                ]
+
+                if not invalid_lessons:
+                    return selected_lessons_raw
+
+                print(
+                    "Ungültige Auswahl: "
+                    f"{self._format_lessons(invalid_lessons)}. "
+                    "Bitte wähle nur verfügbare Lektionen."
+                )
+
+        print(
+            "Keine Lektionen für das ausgewählte Fach gefunden. "
+            "Bitte Lektionen manuell eingeben."
+        )
+        return input(
+            "Welche Lektionen sollen verwendet werden? "
+            "(z. B. 1 oder 1,2,3 oder 1-4) "
+        )
+
+    def _prompt_subject(self) -> str:
+        options_text = _format_subject_options()
+        print(f"Verfügbare Schulfächer: {options_text}")
+
+        while True:
+            subject_raw = input(
+                "Für welches Schulfach sollen die Aufgaben erstellt werden? "
+                f"({options_text}) "
+            )
+            try:
+                return self._normalize_subject(subject_raw)
+            except ValueError:
+                print(f"Ungültige Auswahl. Bitte wähle: {options_text}")
+
+    def _prompt_task_type(self) -> str:
+        options_text = _format_task_type_options()
+        print(f"Verfügbare Aufgabentypen: {options_text}")
+
+        while True:
+            task_type_raw = input(
+                "Welcher Aufgabentyp soll erstellt werden? "
+                f"({options_text}) "
+            )
+            try:
+                return self._normalize_type(task_type_raw)
+            except ValueError:
+                print(f"Ungültige Auswahl. Bitte wähle: {options_text}")
 
     def _apply_input_data(self, input_data: dict[str, Any]) -> TaskGeneratorState:
         self.state.subject = self._normalize_subject(
@@ -100,20 +136,12 @@ class TaskGeneratorFlow(Flow[TaskGeneratorState]):
             )
             return state
 
+        subject = self._prompt_subject()
         state = self._apply_input_data(
             {
-                "subject": input(
-                    "Für welches Schulfach sollen die Aufgaben erstellt werden? "
-                    "(Latein/Englisch) "
-                ),
-                "lessons": input(
-                    "Welche Lektionen sollen verwendet werden? "
-                    "(z. B. 1,2,3,4) "
-                ),
-                "type": input(
-                    "Welcher Aufgabentyp soll erstellt werden? "
-                    "(z. B. vocabularyTest) "
-                ),
+                "subject": subject,
+                "lessons": self._prompt_lessons_for_subject(subject),
+                "type": self._prompt_task_type(),
                 "vocabularies": input(
                     "Wie viele Vokabeln sollen enthalten sein? "
                     "(z. B. 15) "
@@ -147,9 +175,62 @@ class TaskGeneratorFlow(Flow[TaskGeneratorState]):
         print("Task generated", result.raw)
         self.state.task = result.raw
 
+    @staticmethod
+    def _slugify(value: str) -> str:
+        slug = re.sub(r"[^a-z0-9]+", "_", value.strip().lower())
+        return slug.strip("_") or "output"
+
+    def _default_output_paths(self) -> tuple[Path, Path]:
+        subject_slug = self._slugify(self.state.subject)
+        type_slug = self._slugify(self.state.type)
+        base_dir = Path("aufgaben") / subject_slug
+        worksheet_path = base_dir / f"aufgabenblatt_{subject_slug}_{type_slug}.md"
+        solution_path = base_dir / f"aufgabenblatt_{subject_slug}_{type_slug}_loesung.md"
+        return worksheet_path, solution_path
+
+    def _extract_task_artifacts(self) -> tuple[str, str, Path, Path] | None:
+        raw_task = self.state.task
+        payload: dict[str, Any] | None = None
+
+        if isinstance(raw_task, dict):
+            payload = raw_task
+        elif isinstance(raw_task, str):
+            try:
+                parsed_payload = json.loads(raw_task)
+            except json.JSONDecodeError:
+                parsed_payload = None
+            if isinstance(parsed_payload, dict):
+                payload = parsed_payload
+
+        if not payload:
+            return None
+
+        worksheet_markdown = payload.get("worksheet_markdown")
+        solution_markdown = payload.get("solution_markdown")
+        if not isinstance(worksheet_markdown, str) or not isinstance(solution_markdown, str):
+            return None
+
+        default_worksheet_path, default_solution_path = self._default_output_paths()
+        worksheet_path = Path(str(payload.get("worksheet_path", default_worksheet_path)))
+        solution_path = Path(str(payload.get("solution_path", default_solution_path)))
+
+        return worksheet_markdown, solution_markdown, worksheet_path, solution_path
+
     @listen(generate_task)
     def save_task(self):
         print("Saving task")
+        task_artifacts = self._extract_task_artifacts()
+        if task_artifacts:
+            worksheet_markdown, solution_markdown, worksheet_path, solution_path = task_artifacts
+            worksheet_path.parent.mkdir(parents=True, exist_ok=True)
+            solution_path.parent.mkdir(parents=True, exist_ok=True)
+
+            worksheet_path.write_text(worksheet_markdown, encoding="utf-8")
+            solution_path.write_text(solution_markdown, encoding="utf-8")
+            print(f"Saved worksheet to {worksheet_path}")
+            print(f"Saved solution key to {solution_path}")
+            return
+
         with open("task.txt", "w") as f:
             f.write(self.state.task)
 

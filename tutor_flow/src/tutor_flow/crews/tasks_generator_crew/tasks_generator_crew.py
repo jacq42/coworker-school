@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
@@ -19,6 +21,11 @@ class TasksGeneratorCrew():
     # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
+    skills_config = "config/skills"
+
+    @staticmethod
+    def _skills_path() -> str:
+        return str(Path(__file__).resolve().parent / TasksGeneratorCrew.skills_config)
 
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
@@ -27,6 +34,7 @@ class TasksGeneratorCrew():
         return Agent(
             config=self.agents_config['educational_content_creator'], # type: ignore[index]
             tools=[get_vocabulary_file_read_tool()],
+            skills=[self._skills_path()],
             verbose=True
         )
 
@@ -57,6 +65,7 @@ class TasksGeneratorCrew():
             agents=self.agents, # Automatically created by the @agent decorator
             tasks=self.tasks, # Automatically created by the @task decorator
             process=Process.sequential,
+            skills=[self._skills_path()],
             verbose=True,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

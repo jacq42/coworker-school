@@ -2,31 +2,47 @@ generate_worksheet_task:
   description: >
         1. Analyze the request for subject `{subject}`, lessons `{lessons}`,
         task type `{type}`, and target vocabulary count `{vocabularies}`.
-        Use the structured vocabulary list from `import_vocabulary_task` when it is available.
+        Always use the structured vocabulary list from `import_vocabulary_task` as the primary source.
+        Do not re-read vocabulary files when the imported list is available.
         2. Create a `{type}` that matches the subject and lesson scope.
         If `{subject}` is Latin or English, align the task closely with the imported vocabulary.
+        Only if imported vocabulary is missing or clearly insufficient, use the file reading tool as fallback.
         3. Generate content for exactly `{vocabularies}` vocabulary items when the request is a vocabulary-focused task.
         For non-vocabulary tasks, use the number as the maximum number of external vocabulary items.
-        4. Format the output with a header (Subject, Lessons, Type, Date, Name),
-        numbered tasks, and a solution key on a separate page (shaded in light gray).
+        4. Produce output as two separate Markdown documents following the fixed skill templates:
+        one worksheet file without solutions and one separate solution key file.
+        5. The worksheet must include header metadata (Fach, Klasse, Lektionen, Aufgabentyp, Datum, Name),
+        an Arbeitsauftrag section, numbered Aufgaben sections, and Hinweise.
+        6. The solution key must contain only solutions, with task numbering exactly matching the worksheet.
+        7. Do not include any direct answers in the worksheet file.
   expected_output: >
-        A structured Markdown or JSON representation of the worksheet containing:
-        subject, lessons, task type, exercise content, and a solution key.
-        The content should reflect the requested vocabulary count.
+        A structured response that contains two Markdown artifacts:
+        1) `worksheet_markdown`: worksheet content only (no direct answers),
+        2) `solution_markdown`: separate solution key content.
+        Also include suggested filenames:
+        - `worksheet_path`: `aufgaben/{subject}/aufgabenblatt_[fach]_[typ].md`
+        - `solution_path`: `aufgaben/{subject}/aufgabenblatt_[fach]_[typ]_loesung.md`
+        Both files must reflect subject `{subject}`, lessons `{lessons}`, type `{type}`,
+        and requested vocabulary scope `{vocabularies}`.
   agent: educational_content_creator
 
 import_vocabulary_task:
   description: >
         1. Analyze the request for subject `{subject}`, lessons `{lessons}`,
         task type `{type}`, and target vocabulary count `{vocabularies}`.
-        2. For English, use `src/tutor_flow/vocabulary_library/english/english.md`.
-        For Latin, open the lesson-specific markdown files from `src/tutor_flow/vocabulary_library/latin/`
-        that match `{lessons}`, such as `prima_lektion01.md`, `prima_lektion02.md`, and so on.
+        2. Open lesson-specific markdown files from `src/tutor_flow/vocabulary_library/` using the file reading tool.
+        For Latin, use files from `latin/` that match `{lessons}` like `prima_lektion01.md` and `prima_lektion02.md`.
+        For English, use files from `english/` that match `{lessons}` like `greenline_unit01.md` and `greenline_unit02.md`.
         3. Use the file reading tool to open the matching markdown file or files from the vocabulary library.
-        If the Latin request includes lesson numbers, prefer the corresponding `prima_lektionXX.md` files.
+        If lesson numbers are provided, prefer matching lesson files for the selected subject.
         4. Extract and organize up to `{vocabularies}` relevant vocabulary words and phrases from the selected files.
-        5. Return the vocabulary in a structured format that the worksheet task can reuse directly.
+        5. Return the vocabulary in a structured format that the worksheet task can reuse directly,
+        including `subject`, `lessons`, `source_files`, and `entries`.
   expected_output: >
-        A structured vocabulary list for `{subject}` based on lessons `{lessons}`.
-        Include the selected source files and no more than `{vocabularies}` vocabulary entries unless the request clearly needs fewer.
+        A structured vocabulary payload for `{subject}` based on lessons `{lessons}` with:
+        - `subject`: normalized subject name
+        - `lessons`: normalized list of lesson numbers
+        - `source_files`: selected vocabulary library file paths
+        - `entries`: list of vocabulary pairs or phrases
+        Include no more than `{vocabularies}` entries unless the request clearly needs fewer.
   agent: educational_content_creator
