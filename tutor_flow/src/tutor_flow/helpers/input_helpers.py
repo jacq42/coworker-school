@@ -107,7 +107,7 @@ def _subject_to_language(raw_subject: Any) -> str | None:
     return LANGUAGE_BY_SUBJECT.get(normalized_subject)
 
 
-def _available_lessons_for_subject(raw_subject: Any) -> list[int]:
+def _available_lessons_for_subject(raw_subject: Any) -> list[str]:
     language = _subject_to_language(raw_subject)
     if not language:
         return []
@@ -117,28 +117,67 @@ def _available_lessons_for_subject(raw_subject: Any) -> list[int]:
         return []
 
     lesson_numbers: set[int] = set()
+    lesson_extensions: set[str] = set()
     for file_path in vocabulary_path.glob("*.md"):
-        matches = re.findall(r"\d+", file_path.stem)
-        if not matches:
+        if language == "latin":
+            lesson_match = re.fullmatch(r"prima_lektion(\d+)", file_path.stem)
+            if not lesson_match:
+                continue
+            lesson_numbers.add(int(lesson_match.group(1)))
             continue
-        lesson_numbers.add(int(matches[-1]))
 
-    return sorted(lesson_numbers)
+        if language == "english":
+            numeric_match = re.fullmatch(r"greenline_unit(\d+)", file_path.stem)
+            if numeric_match:
+                lesson_numbers.add(int(numeric_match.group(1)))
+                continue
+
+            extension_match = re.fullmatch(r"greenline_unit([A-Za-z]+\d+)", file_path.stem)
+            if not extension_match:
+                continue
+            label_raw = extension_match.group(1)
+            ext_match = re.fullmatch(r"([A-Za-z]+)(\d+)", label_raw)
+            if ext_match:
+                prefix = ext_match.group(1)
+                number = int(ext_match.group(2))
+                lesson_extensions.add(f"{prefix}{number}")
+            continue
+
+        matches = re.findall(r"\d+", file_path.stem)
+        if matches:
+            lesson_numbers.add(int(matches[-1]))
+
+    numeric_labels = [str(number) for number in sorted(lesson_numbers)]
+    if language != "english":
+        return numeric_labels
+
+    extension_labels = sorted(
+        lesson_extensions,
+        key=lambda label: (
+            re.sub(r"\d+", "", label).lower(),
+            int(re.search(r"\d+", label).group()),
+        ),
+    )
+    return numeric_labels + extension_labels
 
 
-def _parse_lessons(raw_lessons: Any) -> list[int]:
+def _available_lesson_labels_for_subject(raw_subject: Any) -> list[str]:
+    return _available_lessons_for_subject(raw_subject)
+
+
+def _parse_lessons(raw_lessons: Any) -> list[str]:
     if raw_lessons is None:
         return []
 
     if isinstance(raw_lessons, int):
-        return [raw_lessons]
+        return [str(raw_lessons)]
 
     if isinstance(raw_lessons, str):
         raw_text = raw_lessons.strip()
         if not raw_text:
             return []
 
-        lesson_numbers: list[int] = []
+        lesson_numbers: list[str] = []
         for token in raw_text.split(","):
             cleaned_token = token.strip()
             if not cleaned_token:
@@ -149,16 +188,28 @@ def _parse_lessons(raw_lessons: Any) -> list[int]:
                 range_start = int(range_match.group(1))
                 range_end = int(range_match.group(2))
                 step = 1 if range_start <= range_end else -1
-                lesson_numbers.extend(range(range_start, range_end + step, step))
+                lesson_numbers.extend(
+                    str(number) for number in range(range_start, range_end + step, step)
+                )
                 continue
 
             if cleaned_token.isdigit():
-                lesson_numbers.append(int(cleaned_token))
+                lesson_numbers.append(str(int(cleaned_token)))
                 continue
 
-            fallback_numbers = [int(match) for match in re.findall(r"\d+", cleaned_token)]
-            if fallback_numbers:
-                lesson_numbers.extend(fallback_numbers)
+            named_numeric_match = re.fullmatch(
+                r"(?:lektion|unit)\s*(\d+)", cleaned_token, re.IGNORECASE
+            )
+            if named_numeric_match:
+                lesson_numbers.append(str(int(named_numeric_match.group(1))))
+                continue
+
+            compact_token = re.sub(r"\s+", "", cleaned_token)
+            prefixed_match = re.fullmatch(r"([A-Za-z]+)(\d+)", compact_token)
+            if prefixed_match:
+                prefix = prefixed_match.group(1)
+                number = int(prefixed_match.group(2))
+                lesson_numbers.append(f"{prefix}{number}")
                 continue
 
             raise ValueError(f"Unsupported lesson token: {cleaned_token!r}")
@@ -166,12 +217,59 @@ def _parse_lessons(raw_lessons: Any) -> list[int]:
         return lesson_numbers
 
     if isinstance(raw_lessons, (list, tuple, set)):
-        lessons: list[int] = []
+        lessons: list[str] = []
         for lesson in raw_lessons:
             lessons.extend(_parse_lessons(lesson))
         return lessons
 
     raise ValueError(f"Unsupported lessons value: {raw_lessons!r}")
+
+
+def _parse_lessons_for_subject(
+    raw_lessons: Any,
+    raw_subject: Any,
+    *,
+    strict: bool = True,
+) -> list[str]:
+    selected_lessons = _parse_lessons(raw_lessons)
+    available_lessons = _available_lessons_for_subject(raw_subject)
+    if not available_lessons:
+        return selected_lessons
+
+    lesson_alias_to_value: dict[str, str] = {}
+    for lesson in available_lessons:
+        lower_lesson = lesson.lower()
+        lesson_alias_to_value[lower_lesson] = lesson
+
+        if lesson.isdigit():
+            lesson_number = int(lesson)
+            lesson_alias_to_value[str(lesson_number)] = lesson
+            lesson_alias_to_value[f"unit{lesson_number}"] = lesson
+            lesson_alias_to_value[f"lektion{lesson_number}"] = lesson
+            continue
+
+        extension_match = re.fullmatch(r"([A-Za-z]+)(\d+)", lesson)
+        if extension_match:
+            prefix = extension_match.group(1).lower()
+            number = int(extension_match.group(2))
+            lesson_alias_to_value[f"{prefix}{number}"] = lesson
+            lesson_alias_to_value[f"unit{prefix}{number}"] = lesson
+
+    resolved_lessons: list[str] = []
+    for lesson in selected_lessons:
+        lesson_key = re.sub(r"\s+", "", lesson).lower()
+        canonical_lesson = lesson_alias_to_value.get(lesson_key)
+        if canonical_lesson:
+            resolved_lessons.append(canonical_lesson)
+            continue
+        if strict:
+            raise ValueError(
+                f"Unsupported lesson value: {lesson!r}. "
+                f"Allowed lessons: {', '.join(available_lessons)}"
+            )
+        resolved_lessons.append(lesson)
+
+    return resolved_lessons
 
 
 def _parse_vocabulary_count(raw_vocabulary_count: Any) -> int:

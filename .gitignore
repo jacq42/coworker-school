@@ -208,3 +208,7 @@ __marimo__/
 
 # IDE
 .idea/
+
+# TUtor
+/tutor_flow/output_manifest.json
+/tutor_flow/aufgaben/

@@ -146,12 +146,26 @@ Regeln:
 - Alle Lösungen ausschließlich in der separaten Lösungsdatei.
 - Die Nummerierung der Aufgaben muss zwischen beiden Dateien exakt übereinstimmen.
 
-### Schritt 5: Ausgabe
+### Schritt 5: Strukturierte Ausgabe (verbindlich)
 
-1. Aufgabenblatt unter `aufgaben/[fach]/aufgabenblatt_[fach]_[typ].md` speichern
-2. Lösungsschlüssel unter `aufgaben/[fach]/aufgabenblatt_[fach]_[typ]_loesung.md` speichern
-3. Beide Dateien präsentieren
-4. Kurz erklären, was erstellt wurde (Aufgabentyp, Anzahl Aufgaben, getrennte Lösungsdatei)
+Gib am Ende **nur ein JSON-Objekt** zurueck (keinen Fliesstext, keine Erklaerung, keine Markdown-Codefences).
+
+Verwende exakt dieses Schema:
+
+```json
+{
+  "worksheet_markdown": "<vollstaendiger Markdown-Inhalt des Aufgabenblatts>",
+  "solution_markdown": "<vollstaendiger Markdown-Inhalt des Loesungsschluessels>",
+  "worksheet_path": "aufgaben/[fach]/aufgabenblatt_[fach]_[typ].md",
+  "solution_path": "aufgaben/[fach]/aufgabenblatt_[fach]_[typ]_loesung.md"
+}
+```
+
+Regeln fuer das JSON:
+- `worksheet_markdown` und `solution_markdown` sind Pflichtfelder und muessen Strings sein.
+- `worksheet_path` und `solution_path` sind Pflichtfelder und muessen relative Pfade sein.
+- Keine zusaetzlichen Top-Level-Felder ausgeben.
+- Keine Kommentare, keine Backticks, kein Text vor oder nach dem JSON.
 
 ---
 

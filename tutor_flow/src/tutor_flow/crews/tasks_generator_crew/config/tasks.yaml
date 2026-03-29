@@ -16,13 +16,13 @@ generate_worksheet_task:
         6. The solution key must contain only solutions, with task numbering exactly matching the worksheet.
         7. Do not include any direct answers in the worksheet file.
   expected_output: >
-        A structured response that contains two Markdown artifacts:
-        1) `worksheet_markdown`: worksheet content only (no direct answers),
-        2) `solution_markdown`: separate solution key content.
-        Also include suggested filenames:
-        - `worksheet_path`: `aufgaben/{subject}/aufgabenblatt_[fach]_[typ].md`
-        - `solution_path`: `aufgaben/{subject}/aufgabenblatt_[fach]_[typ]_loesung.md`
-        Both files must reflect subject `{subject}`, lessons `{lessons}`, type `{type}`,
+        Return ONLY a single valid JSON object with exactly these top-level keys:
+        - `worksheet_markdown` (string): worksheet content only, no direct answers
+        - `solution_markdown` (string): separate solution key content
+        - `worksheet_path` (string): relative path, e.g. `aufgaben/{subject}/aufgabenblatt_[fach]_[typ].md`
+        - `solution_path` (string): relative path, e.g. `aufgaben/{subject}/aufgabenblatt_[fach]_[typ]_loesung.md`
+        Do not include markdown code fences and do not include explanatory text before or after the JSON.
+        Paths and content must reflect subject `{subject}`, lessons `{lessons}`, type `{type}`,
         and requested vocabulary scope `{vocabularies}`.
   agent: educational_content_creator
 
