@@ -212,3 +212,4 @@ __marimo__/
 # TUtor
 /tutor_flow/output_manifest.json
 /tutor_flow/aufgaben/
+/tutor_flow/uv.lock

@@ -1,2 +1,12 @@
-# coworker-school
+# Coworker School
+
 AI agents crew for school stuff
+
+## Flows
+
+- tutor flow: Lernaufgaben generieren lassen
+
+## TODOs
+
+- Lernplan erstellen der sich aus verschiedenen Fächern zusammensetzt
+- Aufgaben basierend auf dem Lernplan erstellen lassen
