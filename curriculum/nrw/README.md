@@ -8,25 +8,34 @@ Dieser Ordner dient zum Upload der offiziellen NRW-Lehrpläne als PDF-Dateien.
 ```
 curriculum/nrw/
 ├── lernplaene/
-│   ├── deutsch-klasse-7.pdf
-│   ├── englisch-klasse-7.pdf  
-│   ├── latein-klasse-7.pdf
+│   ├── englisch
+│   │   ├── englisch-klasse5.pdf
+│   │   ├── englisch-klasse6.pdf
+│   │   ├── englisch-klasse7.pdf
+│   │   ├── englisch-klasse8.pdf
+│   │   ├── englisch-klasse9.pdf
+│   │   ├── englisch-klasse10.pdf
 │   └── weitere-faecher/
 └── README.md (diese Datei)
 ```
 
 ### **Upload-Richtlinien:**
 - **Dateiformat**: PDF-Dateien
-- **Naming**: `[fach]-klasse-[nummer].pdf`
+- **Namensgebung**: `[fach]-klasse[nummer].pdf` (ohne Bindestriche)
 - **Quelle**: Offizielle NRW Kernlehrpläne
 - **Update**: Bei Lehrplanänderungen
 
+### **Beispiele für Dateinamen:**
+- `deutsch-klasse7.pdf`
+- `latein-klasse7.pdf`  
+- `mathematik-klasse7.pdf`
+
 ### **Integration in Lernstruktur:**
 Die hochgeladenen Lehrpläne werden referenziert in:
-- Subject-spezifischen README-Dateien
+- Schulfach-spezifischen README-Dateien
 - Lernziel-Definitionen  
-- Assessment-Kriterien
-- Progression-Mapping
+- Bewertungskriterien
+- Progressions-Zuordnung
 
 ### **AI-Agent Nutzung:**
 - Automatische Extraktion von Lernzielen

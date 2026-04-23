@@ -1,4 +1,4 @@
-# Coworker School - Subject Learning Objectives
+# Coworker School - Schulfach Lernziele
 
 ## 📚 **Fächerübersicht Klasse 7 (NRW Curriculum)**
 
@@ -26,47 +26,47 @@
 
 ---
 
-### 🇬🇧 **English** (1. Fremdsprache - A2 Niveau)
+### 🇬🇧 **Englisch** (1. Fremdsprache - A2 Niveau)
 **Schwerpunkt**: Kommunikative Kompetenzen nach CEFR A2
 
-#### **Vocabulary** (~1000 active words)
-- Personal information, family, friends
-- School life and daily routines  
-- Hobbies, sports, entertainment
-- Shopping, food, travel
+#### **Vokabeln** (~1000 aktive Wörter)
+- Persönliche Informationen, Familie, Freunde
+- Schulleben und Tagesroutinen  
+- Hobbys, Sport, Unterhaltung
+- Einkaufen, Essen, Reisen
 
-#### **Grammar**
-- Present/Past tenses (simple + progressive)
-- Future forms (will/going to)
-- Modal verbs (can, must, should)
-- Comparative and superlative
+#### **Grammatik**
+- Gegenwarts-/Vergangenheitsformen (einfach + verlaufend)
+- Zukunftsformen (will/going to)
+- Modalverben (can, must, should)
+- Steigerung und Vergleich
 
-#### **Communication Skills**
-- Describing people, places, activities
-- Expressing opinions and preferences
-- Simple conversations about familiar topics
-- Short texts about personal experiences
+#### **Kommunikationsfähigkeiten**
+- Personen, Orte, Aktivitäten beschreiben
+- Meinungen und Vorlieben ausdrücken
+- Einfache Gespräche über vertraute Themen
+- Kurze Texte über persönliche Erfahrungen
 
 **📊 Lernfortschritt**: A2 Kompetenzstufen nach EU-Referenzrahmen
 
 ---
 
-### 🏛️ **Latin** (2. Fremdsprache - Prima Cornelsen)
+### 🏛️ **Latein** (2. Fremdsprache - Prima Cornelsen)
 **Schwerpunkt**: Grundlagen der lateinischen Sprache
 
-#### **Vocabulary** (Prima Lektionen 1-15)
+#### **Vokabeln** (Prima Lektionen 1-15)
 - Grundwortschatz: ~300 Kernvokabeln
 - Thematische Bereiche: domus, familia, schola
 - Kulturvokabular: Römisches Leben
 - Etymologie: Lateinische Wörter im Deutschen
 
-#### **Grammar**
+#### **Grammatik**
 - Deklinationen: a-, o-, konsonantische Deklination
 - Konjugationen: Präsens, Imperfekt, Perfekt
 - Syntax: einfache Haupt- und Nebensätze
 - Kasus-Funktionen: Nominativ, Akkusativ, Genitiv, Dativ
 
-#### **Cultural Studies**
+#### **Kulturkunde**
 - Römische Familie und Gesellschaft
 - Schule in der Antike
 - Mythologie und Geschichte
@@ -79,30 +79,30 @@
 ## 📂 **Ordnerstruktur**
 
 ```
-subjects/
-├── german/
-│   ├── grammar-master.md
-│   └── grade-7/
+schulfaecher/
+├── deutsch/
+│   ├── grammatik-master.md
+│   └── klasse-7/
 │       ├── rechtschreibung/
 │       └── grammatik/
-├── english/
-│   ├── vocabulary-master.md  
-│   └── grade-7/
-│       └── vocabulary/
-└── latin/
-    ├── vocabulary-master.md
-    └── grade-7/
-        └── vocabulary/
+├── englisch/
+│   ├── vokabel-master.md  
+│   └── klasse-7/
+│       └── vokabeln/
+└── latein/
+    ├── vokabel-master.md
+    └── klasse-7/
+        └── vokabeln/
 ```
 
-## 📋 **Curriculum Reference**
+## 📋 **Curriculum Referenz**
 
 **Basis**: Nordrhein-Westfalen (NRW) Kernlehrpläne
 **Upload-Ordner**: `curriculum/nrw/lernplaene/`
 
 - Deutsche Rechtschreibung: Duden-konform
-- English A2: CEFR-Richtlinien  
-- Latin: Traditionelle Lateinpädagogik
+- Englisch A2: CEFR-Richtlinien  
+- Latein: Traditionelle Lateinpädagogik
 
 ## 🎯 **AI Agent Integration**
 
